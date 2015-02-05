@@ -5,9 +5,14 @@ from setuptools import setup, find_packages, Extension
 import sys
 # from Cython.Build import cythonize
 
-MYDIR = path.abspath(os.path.dirname(__file__))
 REQUIRES = ['cython']
 DESCRIPTION = 'rsync access for python'
+
+from Cython.Build import cythonize
+from Cython.Distutils import build_ext
+
+junk_falcon="""
+MYDIR = path.abspath(os.path.dirname(__file__))
 
 try:
     from Cython.Distutils import build_ext
@@ -28,9 +33,17 @@ def list_modules(dirname):
 
 ext_modules = [
     Extension('rsync4python.' + ext, [path.join('rsync4python', ext + '.py')])
-    for ext in list_modules(path.join(MYDIR, 'rsync4python'))]
+"""
 
-cmdclass = {'build_ext': build_ext}
+junk_1="""
+ext_modules = [
+    Extension('rsync4python.rsync',
+              ['rsync4python/rsync.pxd'],
+              libraries=['rsync'])
+]
+"""
+
+#cmdclass = {'build_ext': build_ext}
 
 setup(
     name='rsync4python',
@@ -41,10 +54,9 @@ setup(
     author='Rackspace',
     author_email='ben.meyer@rackspace.com',
     install_requires=REQUIRES,
-    test_suite='rsync4python',
     zip_safe=False,
-    packages=find_packages(exclude=['test*',
-                                    'rsync4python/tests*']),
-    cmdclass=cmdclass,
-    ext_modules=ext_modules
+    cmdclass = {'build_ext': build_ext },
+    ext_modules=cythonize([Extension('rsync4python.rsync', ['rsync4python/rsync.pyx'], libraries=['rsync'])]),
+    packages=find_packages(exclude=['tests',
+                                    'rsync4python/tests*'])
 )

@@ -2,10 +2,10 @@
 Test Basic
 """
 import os
-import tempFile
+import tempfile
 import unittest
 
-import rsync4python
+import rsync4python.rsync
 
 
 class BasicTest(unittest.TestCase):
@@ -18,14 +18,14 @@ class BasicTest(unittest.TestCase):
 
     def add_data_to_file(self, fileobj, datasize):
             current_position = fileobj.tell()
-            fileobj.write(os.urandom(datasize)
+            fileobj.write(os.urandom(datasize))
             fileobj.seek(current_position)
 
     def test_basic(self):
 
-        with tempFile.TemporaryFile() as base_data:
-            self.add_data_to_file(base_data)
+        with tempfile.TemporaryFile() as base_data:
+            self.add_data_to_file(base_data, 1024*1024*1024)
 
-            with tempFile.TemporaryFile() as signature_data:
+            with tempfile.TemporaryFile() as signature_data:
                 
                 rsync4python.signature(base_data, signature_data)
