@@ -5,6 +5,18 @@ __pycache__/
 # C extensions
 *.so
 
+# Vim cache files
+*.sw?
+
+# Cython files
+*.c
+*.so
+
+
+# Virtualenv
+*env*/
+.*env*/
+
 # Distribution / packaging
 .Python
 env/
