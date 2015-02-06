@@ -58,5 +58,10 @@ setup(
     cmdclass = {'build_ext': build_ext },
     ext_modules=cythonize([Extension('rsync4python.rsync', ['rsync4python/rsync.pyx'], libraries=['rsync'])]),
     packages=find_packages(exclude=['tests',
-                                    'rsync4python/tests*'])
+                                    'rsync4python/tests*']),
+    entry_points={
+        'console_scripts': [
+            'pyrdiff = rsync4python.shell:main',
+        ]
+    },
 )

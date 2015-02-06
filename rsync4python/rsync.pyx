@@ -2,6 +2,7 @@
 rsync4python - C Interface
 """
 cimport librsync
+cimport libcext
 
 __RSYNC_VERSION_MAJOR=0
 __RSYNC_VERSION_MINOR=9
@@ -12,9 +13,22 @@ RSYNC_VERSION=(__RSYNC_VERSION_MAJOR,
                __RSYNC_VERSION_UPDATE)
 
 
-cdef extern from "Python.h":
-    ctypedef struct FILE
-    FILE* PyFile_AsFile(object)
+cdef class __file_manager:
+    cdef object filestream
+    cdef int old_fd
+    cdef int new_fd
+
+    def __cinit__(self, filestream):
+        self.filestream = filestream
+        self.old_fd = self.filestream.fileno()
+        self.new_fd = libcext.dup(self.old_fd)
+
+    def __dealloc__(self):
+        libcext.close(self.new_fd)
+
+        self.filestream = None
+        self.old_fd = 0
+        self.new_fd = 0
 
 
 cdef class rsync:
@@ -34,17 +48,37 @@ cdef class rsync:
         # strong_len = librsync.RS_DEFAULT_STRONG_LEN
         block_len = 2048
         strong_len = 8
-        result = librsync.rs_sig_file(PyFile_AsFile(base),
-                                      PyFile_AsFile(signature),
-                                      rsync.block_len,
-                                      rsync.strong_len,
+        b = __file_manager(base)
+        s = __file_manager(signature)
+        cdef libcext.FILE* base_file = libcext.fdopen(b.new_fd, b.filestream.mode.encode())
+        cdef libcext.FILE* sig_file = libcext.fdopen(s.new_fd, s.filestream.mode.encode())
+        result = librsync.rs_sig_file(base_file,
+                                      sig_file,
+                                      block_len,
+                                      strong_len,
                                       NULL)
+        libcext.fclose(sig_file)
+        libcext.fclose(base_file)
+        del s
+        del b
 
 
     @staticmethod
-    def patch(base, delta, result):
+    def patch(base, delta, baseplusdelta):
         # stats = librsync.rs_stats_t
-        result = librsync.rs_patch_file(PyFile_AsFile(base),
-                                        PyFile_AsFile(delta),
-                                        PyFile_AsFile(result),
+        b = __file_manager(base)
+        d = __file_manager(delta)
+        bpd = __file_manager(baseplusdelta)
+        cdef libcext.FILE* base_file = libcext.fdopen(b.new_fd, b.filestream.mode.encode())
+        cdef libcext.FILE* delta_file = libcext.fdopen(d.new_fd, d.filestream.mode.encode())
+        cdef libcext.FILE* baseplusdelta_file = libcext.fdopen(bpd.new_fd, bpd.filestream.mode.encode())
+        result = librsync.rs_patch_file(base_file,
+                                        delta_file,
+                                        baseplusdelta_file,
                                         NULL)
+        libcext.fclose(baseplusdelta_file)
+        libcext.fclose(delta_file)
+        libcext.fclose(base_file)
+        del bpd
+        del d
+        del b
