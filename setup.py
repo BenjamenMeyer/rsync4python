@@ -3,47 +3,12 @@ import os
 from os import path
 from setuptools import setup, find_packages, Extension
 import sys
-# from Cython.Build import cythonize
 
 REQUIRES = ['cython']
 DESCRIPTION = 'rsync access for python'
 
 from Cython.Build import cythonize
 from Cython.Distutils import build_ext
-
-junk_falcon="""
-MYDIR = path.abspath(os.path.dirname(__file__))
-
-try:
-    from Cython.Distutils import build_ext
-except ImportError:
-    print('\nFAILED: Cython not currently installed')
-    sys.exit(1)
-
-def list_modules(dirname):
-    filenames = glob.glob(path.join(dirname, '*.py'))
-
-    module_names = []
-    for name in filenames:
-        module, ext = path.splitext(path.basename(name))
-        if module != '__init__':
-            module_names.append(module)
-
-    return module_names
-
-ext_modules = [
-    Extension('rsync4python.' + ext, [path.join('rsync4python', ext + '.py')])
-"""
-
-junk_1="""
-ext_modules = [
-    Extension('rsync4python.rsync',
-              ['rsync4python/rsync.pxd'],
-              libraries=['rsync'])
-]
-"""
-
-#cmdclass = {'build_ext': build_ext}
 
 setup(
     name='rsync4python',
