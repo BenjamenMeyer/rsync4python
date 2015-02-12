@@ -38,7 +38,7 @@ try:
                   ['rsync4python/rsync.pyx'],
                   libraries=['rsync'])
     ] 
-    extensions = cythonize()
+    extensions = cythonize(cython_extensions)
 
 except ImportError:
     extensions = precompiled_extensions
