@@ -14,8 +14,8 @@ env:
   - TOX_ENV=pep8
 
 script:
-  python setup.py build_ext --inplace
-  tox -v -e $TOX_ENV -- -v
+  - python setup.py build_ext --inplace
+  - tox -v -e $TOX_ENV -- -v
 
 notifications:
   email:
