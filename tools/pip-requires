@@ -1,1 +1,2 @@
-cython
+#cython
+#git+git://github.com/cython/cython@master
