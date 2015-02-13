@@ -8,6 +8,7 @@ def signature(log, arguments):
     rsync4python.rdiff.rdiff_signature(arguments.base,
                                        arguments.signature)
 
+
 def patch(log, arguments):
     rsync4python.rdiff.rdiff_patch(arguments.base,
                                    arguments.delta,

@@ -2,11 +2,13 @@ import sys
 
 import rsync4python.rsync
 
+
 def rdiff_signature(basefilename, signature_filename):
 
     with open(basefilename, 'rb') as base:
         with open(signature_filename, 'wb') as signature:
             rsync4python.rsync.rsync.signature(base, signature)
+
 
 def rdiff_patch(basefilename, deltafilename, finalfilename):
 

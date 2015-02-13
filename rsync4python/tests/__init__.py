@@ -24,8 +24,6 @@ class BasicTest(unittest.TestCase):
     def test_basic(self):
 
         with tempfile.TemporaryFile() as base_data:
-            self.add_data_to_file(base_data, 1024*1024*1024)
-
+            self.add_data_to_file(base_data, 1024 * 1024 * 1024)
             with tempfile.TemporaryFile() as signature_data:
-                
                 rsync4python.signature(base_data, signature_data)
