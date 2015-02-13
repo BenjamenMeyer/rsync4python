@@ -1,17 +1,21 @@
 language: python
-python:
-  - "3.4"
+matrix:
+    include:
+        - python: "2.7"
+          env: TEST_SUITE=suite_2_7 TOX_ENV=py27
+        - python: "3.4"
+          env: TEST_SUITE=suite_3_4 TOX_ENV=py34
+        - python: "3.4"
+          env: TEST_SUITE=suite_3_4 TOX_ENV=pep8
 
 before_install:
-  - sudo apt-get install build-essential python-dev
+  - sudo apt-get install build-essential python-dev librsync-dev 
 
-install: pip install Cython tox setuptools virtualenv --upgrade
+install: pip install cython tox setuptools virtualenv --upgrade
 
-env:
-  - TOX_ENV=py34
-  - TOX_ENV=pep8
-
-script: tox -v -e $TOX_ENV -- -v
+script:
+  - python setup.py build_ext --inplace
+  - tox -v -e $TOX_ENV -- -v
 
 notifications:
   email:
