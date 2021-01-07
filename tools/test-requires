@@ -1,6 +1,7 @@
 coverage
-nose
-nose-exclude
-pep8
+pytest
+pytest-cov
+pycodestyle
 setuptools>=1.1.6
+Cython
 mock

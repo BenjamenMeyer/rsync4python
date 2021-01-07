@@ -46,12 +46,12 @@ except ImportError:
 
 setup(
     name='rsync4python',
-    version='0.2',
+    version='0.3',
     description='rsync4python - {0}'.format(DESCRIPTION),
     license='Apache License 2.0',
     url='https://github.com/BenjamenMeyer/rsync4python',
-    author='Rackspace',
-    author_email='ben.meyer@rackspace.com',
+    author='Benjamen Meyer',
+    author_email='bm_witness@yahoo.com',
     install_requires=REQUIRES,
     zip_safe=False,
     ext_modules=extensions,
