@@ -31,6 +31,8 @@ cdef class __file_manager:
         self.new_fd = 0
 
 
+RS_BLAKE2_SIG_MAGIC = 0x72730137
+
 cdef class rsync:
 
     def __cinit__(self):
@@ -56,6 +58,7 @@ cdef class rsync:
                                       sig_file,
                                       block_len,
                                       strong_len,
+                                      RS_BLAKE2_SIG_MAGIC,
                                       NULL)
         libcext.fclose(sig_file)
         libcext.fclose(base_file)
